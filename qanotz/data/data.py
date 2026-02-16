@@ -4,7 +4,7 @@ This file manages the database operations for the notes app.
 This includes creating the database, adding, retrieving, updating, and deleting notes.
 """
 
-from ..utils import os as os_utils
+from qanotz.utils import os as os_utils
 
 class Database:
     def __init__(self):
