@@ -4,8 +4,8 @@ This file contains the main application class and the entry point to run the app
 """
 
 import tkinter as tk
-import data.data as dbutils
-import ui.ui as ui
+from qanotz.data.data import Database
+from qanotz.ui.ui import UIController
 
 TESTING_MODE = True
 
@@ -15,9 +15,9 @@ class App:
         self.root.title("QANotz")
         self.root.geometry("500x500")
 
-        self.database = dbutils.Database()
+        self.database = Database()
 
-        ui.UI(self)
+        self.ui_controller = UIController(self)
     
     def start(self):
         self.root.mainloop()

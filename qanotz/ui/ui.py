@@ -1,41 +1,10 @@
-
 import tkinter as tk
 
-class UI:
+class UIController:
     def __init__(self, app):
+        from qanotz.ui import frames as frames
+        
         self.app = app
         self.root = app.root
 
-        self.label = tk.Label(self.root, text="Welcome to QANotz", font=("Arial", 32))
-        self.label.grid(row=0, column=0, padx=10, pady=10)
-
-        button_frame = tk.Frame(self.root)
-        button_frame.grid(row=1, column=0, pady=10)
-
-        self.button1 = tk.Button(button_frame, text="Save QA")
-        self.button1.pack(side=tk.LEFT, padx=5)
-
-        self.button2 = tk.Button(button_frame, text="Open QA")
-        self.button2.pack(side=tk.LEFT, padx=5)
-
-        self.button3 = tk.Button(button_frame, text="Delete QA")
-        self.button3.pack(side=tk.LEFT, padx=5)
-
-        self.button_switch = tk.Button(button_frame, text="Switch Mode")
-        self.button_switch.pack(side=tk.LEFT, padx=5)
-        self.mode = "editor"
-
-        self.text = tk.Text(self.root, height=10, width=30)
-        self.text.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
-        
-        self.root.grid_rowconfigure(2, weight=1)
-        self.root.grid_columnconfigure(0, weight=1)
-
-    def switch_mode(self) -> None:
-        if self.mode == "editor":
-            self.mode = "viewer"
-            self.text.config(state=tk.DISABLED)
-        else:
-            self.mode = "editor"
-            self.text.config(state=tk.NORMAL)
-            self.button_switch.config(text="Switch to Viewer Mode")
+        frames.EditorFrame(self).root.pack(fill=tk.BOTH, expand=True)
