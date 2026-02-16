@@ -3,8 +3,6 @@ from qanotz.ui.ui import UIController
 
 class EditorFrame(tk.Frame):
     def __init__(self, master: UIController, **kwargs):
-        from qanotz.ui.ui import UIController
-
         self.root = tk.Frame(master.root, **kwargs)
 
         self.label = tk.Label(self.root, text="Welcome to QANotz", font=("Arial", 32))
