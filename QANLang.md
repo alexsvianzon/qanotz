@@ -4,10 +4,10 @@
 
 ```
 {q 1 How do I center a div?
-    {a 1 CSS display and justify
+    {a 1 Use CSS display and justify
         {d c set display to flex and justify-content to center}
         {d h 1}}
-    {a 2 CSS grid
+    {a 2 Use CSS grid
         {d c set display to grid and place-items to center}
         {d h 0.8}}}
 ```
@@ -26,4 +26,4 @@ QANLang combines concepts from JSON, XML, and HTML into a single format.
 
 ## Why Not JSON?
 
-QANLang was designed specifically for the quick edit style of note taking. While JSON is already powerful and widely used, it often requires additional formatting and syntax that slows that quick edit style
+QANLang was designed specifically for the quick edit style of note taking. While JSON is already powerful and widely used, it often requires additional formatting and syntax that slows that quick edit style.

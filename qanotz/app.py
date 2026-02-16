@@ -15,6 +15,9 @@ class App:
         self.root.title("QANotz")
         self.root.geometry("500x500")
 
+        icon_image = tk.PhotoImage(file='icon.png')
+        self.root.iconphoto(False, icon_image)
+
         self.database = Database()
 
         self.ui_controller = UIController(self)
