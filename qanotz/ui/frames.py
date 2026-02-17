@@ -11,17 +11,17 @@ class EditorFrame(tk.Frame):
         button_frame = tk.Frame(self.root)
         button_frame.grid(row=1, column=0, pady=10)
 
-        self.button1 = tk.Button(button_frame, text="Save QA")
-        self.button1.pack(side=tk.LEFT, padx=5)
+        self.save_button = tk.Button(button_frame, text="Save QA")
+        self.save_button.pack(side=tk.LEFT, padx=5)
 
-        self.button2 = tk.Button(button_frame, text="Open QA")
-        self.button2.pack(side=tk.LEFT, padx=5)
+        self.open_button = tk.Button(button_frame, text="Open QA")
+        self.open_button.pack(side=tk.LEFT, padx=5)
 
-        self.button3 = tk.Button(button_frame, text="Delete QA")
-        self.button3.pack(side=tk.LEFT, padx=5)
+        self.delete_button = tk.Button(button_frame, text="Delete QA")
+        self.delete_button.pack(side=tk.LEFT, padx=5)
 
-        self.button_switch = tk.Button(button_frame, text="Switch Mode")
-        self.button_switch.pack(side=tk.LEFT, padx=5)
+        self.switch_button = tk.Button(button_frame, text="Switch Mode")
+        self.switch_button.pack(side=tk.LEFT, padx=5)
 
         self.text = tk.Text(self.root, height=10, width=30)
         self.text.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
