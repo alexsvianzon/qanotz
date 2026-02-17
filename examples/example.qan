@@ -1,0 +1,18 @@
+{t 1 Common Questions}
+
+{q 1 How do I center a div?
+    {a 1 CSS display and justify
+        {d c Set 'display' to 'flex' and 'justify-content' to 'center'}
+        {d h 1}}
+    {a 2 CSS grid
+        {d c Set 'display' to 'grid' and 'place-items' to 'center'}
+        {d h 0.8}}}
+
+{q 1 How do I write a print statement in JavaScript?
+    {a 1 CSS display and justify
+        {d c 'message' must be a string or can be converted into one}
+        {d c Don't forget a semicolon (;)}
+        {d h 1}}
+    {a 2 CSS grid
+        {d c Set 'display' to 'grid' and 'place-items' to 'center'}
+        {d h 0.8}}}

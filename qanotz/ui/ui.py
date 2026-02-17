@@ -7,4 +7,4 @@ class UIController:
         self.app = app
         self.root = app.root
 
-        frames.MenuFrame(self).root.pack(fill=tk.BOTH, expand=True)
+        frames.ViewFrame(self).root.pack(fill=tk.BOTH, expand=True)

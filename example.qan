@@ -1,7 +1,0 @@
-{q 1 How do I center a div?
-{a 1 CSS display and justify
-{d c set display to flex and justify-content to center}
-{d h 1}}
-{a 2 CSS grid
-{d c set display to grid and place-items to center}
-{d h 0.8}}}

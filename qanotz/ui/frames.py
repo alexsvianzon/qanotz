@@ -49,3 +49,27 @@ class MenuFrame(tk.Frame):
         self.delete_button.grid(row=4, column=0, padx=10, pady=10)
 
         self.root.grid_columnconfigure(0, weight=1)
+
+class ViewFrame(tk.Frame):
+    def __init__(self, master: UIController, **kwargs):
+        self.root = tk.Frame(master.root, **kwargs)
+
+        self.root = tk.Frame(master.root, **kwargs)
+
+        button_frame = tk.Frame(self.root)
+        button_frame.grid(row=1, column=0, pady=10)
+
+        self.edit_button = tk.Button(button_frame, text="Edit QA")
+        self.edit_button.pack(side=tk.LEFT, padx=5)
+
+        self.open_button = tk.Button(button_frame, text="Open QA")
+        self.open_button.pack(side=tk.LEFT, padx=5)
+
+        self.delete_button = tk.Button(button_frame, text="Delete QA")
+        self.delete_button.pack(side=tk.LEFT, padx=5)
+
+        self.text = tk.Text(self.root, height=10, width=30)
+        self.text.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        
+        self.root.grid_rowconfigure(2, weight=1)
+        self.root.grid_columnconfigure(0, weight=1)

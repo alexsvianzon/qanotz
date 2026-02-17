@@ -1,0 +1,20 @@
+# QANLang reference from example.qan
+
+Common Questions
+
+How do I center a div?
+
+1. CSS display and justify
+  Comments:
+    - Set 'display' to 'flex' and 'justify-content' to 'center'
+
+2. CSS grid
+  Comments:
+   - Set 'display' to 'grid' and 'place-items' to 'center'
+
+How do I write a print statement in JavaScript?
+
+1. console.log(message);
+  Comments:
+    - 'message' must be a string or can be converted into one
+    - Don't forget a semicolon (;)
