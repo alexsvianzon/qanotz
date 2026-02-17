@@ -19,78 +19,90 @@ def _tokenize(text) -> list:
     
     return tokens
 
-def _parse_tokens(tokens, index=0) -> (dict | tuple):
-    """Recursively parse tokens into a dictionary structure."""
+def _parse_tokens(tokens: list) -> dict:
     result = {}
+    index = 0
     
     while index < len(tokens):
         token = tokens[index]
-        
-        if token == "{":
-            index += 1
-            if index < len(tokens):
-                marker = tokens[index]
-                index += 1
-                
-                if marker == "q":  # Question
-                    q_id = tokens[index]
-                    index += 1
-                    q_text = tokens[index]
-                    index += 1
-                    
-                    result["question"] = {
-                        "id": q_id,
-                        "text": q_text,
-                        "answers": []
-                    }
-                    
-                elif marker == "a":  # Answer
-                    a_id = tokens[index]
-                    index += 1
-                    a_text = tokens[index]
-                    index += 1
-                    
-                    answer = {
-                        "id": a_id,
-                        "text": a_text,
-                        "details": []
-                    }
-                    
-                    # Parse details until we hit }
-                    while index < len(tokens) and tokens[index] != "}":
-                        if tokens[index] == "{":
-                            index += 1
-                            if index < len(tokens) and tokens[index] == "d":
-                                index += 1
-                                detail_type = tokens[index]
-                                index += 1
-                                detail_value = tokens[index]
-                                index += 1
-                                
-                                answer["details"].append({
-                                    "type": detail_type,
-                                    "value": detail_value
-                                })
-                        else:
-                            index += 1
-                    
-                    if "question" in result:
-                        result["question"]["answers"].append(answer)
-                    
-                elif marker == "d":  # Detail
-                    pass
-        
-        elif token == "}":
-            return result, index + 1
-        
+        char_index = 0
+        char = token[char_index]
+
+        item = result.__len__()
+
+        if char == "q":
+            result[item] = {}
+            result[item]["type"] = "question"
+
+            char_index += 2
+            char = token[char_index]
+            if char.isdigit():
+                result[item]["id"] = int(char)
+                char_index += 1
+            else:
+                raise ValueError(f"Expected question ID at token: {token}")
+            
+            char_index += 1
+
+            q_body: str = ""
+            while char_index < len(token):
+                q_body += token[char_index]
+                char_index += 1
+
+            result[item]["body"] = q_body
+
+        if char == "a":
+            result[item] = {}
+            result[item]["type"] = "answer"
+
+            char_index += 2
+            char = token[char_index]
+            if char.isdigit():
+                result[item]["id"] = int(char)
+                char_index += 1
+            else:
+                raise ValueError(f"Expected answer ID at token: {token}")
+            
+            char_index += 1
+
+            q_body: str = ""
+            while char_index < len(token):
+                q_body += token[char_index]
+                char_index += 1
+
+            result[item]["body"] = q_body
+
+        if char == "d":
+            result[item] = {}
+            result[item]["type"] = "data"
+
+            char_index += 2
+            char = token[char_index]
+            if char in "chs":
+                result[item]["id"] = char
+                char_index += 1
+            else:
+                raise ValueError(f"Expected data ID at token '{token}' to be one of 'c', 'h', or 's'")
+            
+            char_index += 1
+
+            q_body: str = ""
+            while char_index < len(token):
+                q_body += token[char_index]
+                char_index += 1
+
+            result[item]["body"] = q_body
+            
         index += 1
-    
+            
     return result
 
-def parse(text):
-    """Parse QAN format into a dictionary structure."""
+        
+
+def parse(text) -> dict:
     tokens = _tokenize(text)
-    print(tokens)
+    parsed = _parse_tokens(tokens)
+    return parsed
 
 if __name__ == "__main__":
     sample_text = "" \
