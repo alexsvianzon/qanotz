@@ -1,3 +1,6 @@
+import token
+
+
 def _tokenize(text) -> list:
     tokens = []
     current = ""
@@ -44,14 +47,13 @@ def _parse_tokens(tokens: list) -> dict:
             
             char_index += 1
 
-            q_body: str = ""
+            body: str = ""
             while char_index < len(token):
-                q_body += token[char_index]
+                body += token[char_index]
                 char_index += 1
 
-            result[item]["body"] = q_body
-
-        if char == "a":
+            result[item]["body"] = body
+        elif char == "a":
             result[item] = {}
             result[item]["type"] = "answer"
 
@@ -65,14 +67,13 @@ def _parse_tokens(tokens: list) -> dict:
             
             char_index += 1
 
-            q_body: str = ""
+            body: str = ""
             while char_index < len(token):
-                q_body += token[char_index]
+                body += token[char_index]
                 char_index += 1
 
-            result[item]["body"] = q_body
-
-        if char == "d":
+            result[item]["body"] = body
+        elif char == "d":
             result[item] = {}
             result[item]["type"] = "data"
 
@@ -86,12 +87,26 @@ def _parse_tokens(tokens: list) -> dict:
             
             char_index += 1
 
-            q_body: str = ""
+            body: str = ""
             while char_index < len(token):
-                q_body += token[char_index]
+                body += token[char_index]
                 char_index += 1
 
-            result[item]["body"] = q_body
+            result[item]["body"] = body
+        elif char == "t":
+            result[item] = {}
+            result[item]["type"] = "title"
+
+            char_index += 2
+
+            body: str = ""
+            while char_index < len(token):
+                body += token[char_index]
+                char_index += 1
+
+            result[item]["body"] = body
+        else:
+            raise ValueError(f"Unexpected token type '{char}' in token: '{token}'")
             
         index += 1
             
@@ -102,11 +117,26 @@ def _parse_tokens(tokens: list) -> dict:
 def parse(text) -> dict:
     tokens = _tokenize(text)
     parsed = _parse_tokens(tokens)
+    print(parsed)
     return parsed
 
 if __name__ == "__main__":
-    sample_text = "" \
-    "{q 1 What is the capital of France? " \
-    "{a 1 Paris {d s Wikipedia}} " \
-    "{a 2 London {d s Wikipedia}}}"
+    sample_text = """
+    {t Common Questions}
+    {q 1 How do I center a div?
+        {a 1 CSS display and justify
+            {d c Set 'display' to 'flex' and 'justify-content' to 'center'}
+            {d h 1}}
+        {a 2 CSS grid
+            {d c Set 'display' to 'grid' and 'place-items' to 'center'}
+            {d h 0.8}}}
+
+    {q 1 How do I write a print statement in JavaScript?
+        {a 1 CSS display and justify
+            {d c 'message' must be a string or can be converted into one}
+            {d c Don't forget a semicolon (;)}
+            {d h 1}}
+        {a 2 CSS grid
+            {d c Set 'display' to 'grid' and 'place-items' to 'center'}
+            {d h 0.8}}}"""
     parsed = parse(sample_text)
