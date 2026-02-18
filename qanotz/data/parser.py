@@ -19,7 +19,7 @@ def _tokenize(text) -> list:
     
     return tokens
 
-def _parse_tokens(tokens: list) -> dict:
+def _parse_tokens(tokens: list, include_types: str = "tqad") -> dict:
     result = {}
     index = 0
     
@@ -30,7 +30,7 @@ def _parse_tokens(tokens: list) -> dict:
 
         item = result.__len__()
 
-        if char == "q":
+        if char == "q" and char in include_types:
             result[item] = {}
             result[item]["type"] = "question"
 
@@ -51,7 +51,7 @@ def _parse_tokens(tokens: list) -> dict:
 
             result[item]["body"] = body
             result[item]["answers"] = {}
-        elif char == "a":
+        elif char == "a" and char in include_types:
             num_answers = result[item - 1]["answers"].__len__()
             result[item - 1]["answers"][num_answers] = {}
 
@@ -72,7 +72,7 @@ def _parse_tokens(tokens: list) -> dict:
 
             result[item - 1]["answers"][num_answers]["body"] = body
             result[item - 1]["answers"][num_answers]["metadata"] = {}
-        elif char == "d":
+        elif char == "d" and char in include_types:
             num_answers = result[item - 1]["answers"].__len__()
             num_metadata = result[item - 1]["answers"][num_answers - 1]["metadata"].__len__()
             result[item - 1]["answers"][num_answers - 1]["metadata"][num_metadata] = {}
@@ -93,7 +93,7 @@ def _parse_tokens(tokens: list) -> dict:
                 char_index += 1
 
             result[item - 1]["answers"][num_answers - 1]["metadata"][num_metadata]["body"] = body
-        elif char == "t":
+        elif char == "t" and char in include_types:
             result[item] = {}
             result[item]["type"] = "title"
 
@@ -105,8 +105,6 @@ def _parse_tokens(tokens: list) -> dict:
                 char_index += 1
 
             result[item]["body"] = body
-        else:
-            raise ValueError(f"Unexpected token type '{char}' in token: '{token}'")
             
         index += 1
             
@@ -114,9 +112,9 @@ def _parse_tokens(tokens: list) -> dict:
 
         
 
-def parse(text) -> dict:
+def parse(text, include_types: str = "tqad") -> dict:
     tokens = _tokenize(text)
-    parsed = _parse_tokens(tokens)
+    parsed = _parse_tokens(tokens, include_types)
     print(parsed)
     return parsed
 
@@ -139,4 +137,4 @@ if __name__ == "__main__":
         {a 2 CSS grid
             {d c Set 'display' to 'grid' and 'place-items' to 'center'}
             {d h 0.8}}}"""
-    parsed = parse(sample_text)
+    parsed = parse(sample_text, "tqa")
