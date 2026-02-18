@@ -1,6 +1,3 @@
-import token
-
-
 def _tokenize(text) -> list:
     tokens = []
     current = ""
@@ -53,14 +50,15 @@ def _parse_tokens(tokens: list) -> dict:
                 char_index += 1
 
             result[item]["body"] = body
+            result[item]["answers"] = {}
         elif char == "a":
-            result[item] = {}
-            result[item]["type"] = "answer"
+            num_answers = result[item - 1]["answers"].__len__()
+            result[item - 1]["answers"][num_answers] = {}
 
             char_index += 2
             char = token[char_index]
             if char.isdigit():
-                result[item]["id"] = int(char)
+                result[item - 1]["answers"][num_answers]["id"] = int(char)
                 char_index += 1
             else:
                 raise ValueError(f"Expected answer ID at token: {token}")
@@ -72,15 +70,17 @@ def _parse_tokens(tokens: list) -> dict:
                 body += token[char_index]
                 char_index += 1
 
-            result[item]["body"] = body
+            result[item - 1]["answers"][num_answers]["body"] = body
+            result[item - 1]["answers"][num_answers]["metadata"] = {}
         elif char == "d":
-            result[item] = {}
-            result[item]["type"] = "data"
+            num_answers = result[item - 1]["answers"].__len__()
+            num_metadata = result[item - 1]["answers"][num_answers - 1]["metadata"].__len__()
+            result[item - 1]["answers"][num_answers - 1]["metadata"][num_metadata] = {}
 
             char_index += 2
             char = token[char_index]
             if char in "chs":
-                result[item]["id"] = char
+                result[item - 1]["answers"][num_answers - 1]["metadata"][num_metadata]["id"] = char
                 char_index += 1
             else:
                 raise ValueError(f"Expected data ID at token '{token}' to be one of 'c', 'h', or 's'")
@@ -92,7 +92,7 @@ def _parse_tokens(tokens: list) -> dict:
                 body += token[char_index]
                 char_index += 1
 
-            result[item]["body"] = body
+            result[item - 1]["answers"][num_answers - 1]["metadata"][num_metadata]["body"] = body
         elif char == "t":
             result[item] = {}
             result[item]["type"] = "title"
@@ -131,7 +131,7 @@ if __name__ == "__main__":
             {d c Set 'display' to 'grid' and 'place-items' to 'center'}
             {d h 0.8}}}
 
-    {q 1 How do I write a print statement in JavaScript?
+    {q 2 How do I write a print statement in JavaScript?
         {a 1 CSS display and justify
             {d c 'message' must be a string or can be converted into one}
             {d c Don't forget a semicolon (;)}
