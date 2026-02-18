@@ -5,6 +5,7 @@ This includes creating the database, adding, retrieving, updating, and deleting 
 """
 
 from qanotz.utils import os as os_utils
+from qanotz.data.parser import parse
 
 class Database:
     def __init__(self):
@@ -14,6 +15,9 @@ class Database:
 
         # check if the database directory exists or create it
         os_utils.ensure_dir(self.db_path)
+
+    def search_by_term(self, term: str, look_in: str = "tq"):
+        parse(term, look_in)
 
 if __name__ == "__main__":
     db = Database()

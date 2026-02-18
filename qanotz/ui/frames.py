@@ -1,12 +1,24 @@
+from __future__ import annotations
+
 import tkinter as tk
-from qanotz.ui.ui import UIController
+from typing import TYPE_CHECKING
 
-class EditorFrame(tk.Frame):
+if TYPE_CHECKING:
+    from qanotz.ui.ui import UIController, Frames
+
+class Frame(tk.Frame):
     def __init__(self, master: UIController, **kwargs):
+        # from qanotz.ui.ui import UIController
         self.root = tk.Frame(master.root, **kwargs)
+        self.master = master # pyright: ignore[reportAttributeAccessIssue]
 
-        self.label = tk.Label(self.root, text="Welcome to QANotz", font=("Arial", 32))
-        self.label.grid(row=0, column=0, padx=10, pady=10)
+    def switch_to(self, frame_enum: Frames):
+        self.master.switch_frame(frame_enum) # pyright: ignore[reportAttributeAccessIssue]
+
+class EditorFrame(Frame): # Can switch from editor to view or search, as well as having buttons for saving and deleting QAs. Must handle going to a save frame if it is a new file.
+    def __init__(self, master: UIController, **kwargs):
+        from qanotz.ui.ui import Frames
+        super().__init__(master, **kwargs)
 
         button_frame = tk.Frame(self.root)
         button_frame.grid(row=1, column=0, pady=10)
@@ -14,13 +26,13 @@ class EditorFrame(tk.Frame):
         self.save_button = tk.Button(button_frame, text="Save QA")
         self.save_button.pack(side=tk.LEFT, padx=5)
 
-        self.open_button = tk.Button(button_frame, text="Open QA")
+        self.open_button = tk.Button(button_frame, text="Open QA", command=lambda: self.switch_to(Frames.SEARCH))
         self.open_button.pack(side=tk.LEFT, padx=5)
 
         self.delete_button = tk.Button(button_frame, text="Delete QA")
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
-        self.switch_button = tk.Button(button_frame, text="Switch Mode")
+        self.switch_button = tk.Button(button_frame, text="Switch Mode", command=lambda: self.switch_to(Frames.VIEW))
         self.switch_button.pack(side=tk.LEFT, padx=5)
 
         self.text = tk.Text(self.root, height=10, width=30)
@@ -29,20 +41,21 @@ class EditorFrame(tk.Frame):
         self.root.grid_rowconfigure(2, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
 
-class MenuFrame(tk.Frame):
+class MenuFrame(Frame): # Can switch to editor or search
     def __init__(self, master: UIController, **kwargs):
-        self.root = tk.Frame(master.root, **kwargs)
+        from qanotz.ui.ui import Frames
+        super().__init__(master, **kwargs)
 
         self.label = tk.Label(self.root, text="Welcome to QANotz", font=("Arial", 32))
         self.label.grid(row=0, column=0, padx=10, pady=10)
 
-        self.create_button = tk.Button(self.root, text="Create New QA")
+        self.create_button = tk.Button(self.root, text="Create New QA", command=lambda: self.switch_to(Frames.EDITOR))
         self.create_button.grid(row=1, column=0, padx=10, pady=10)
 
-        self.open_button = tk.Button(self.root, text="Open Existing QA")
+        self.open_button = tk.Button(self.root, text="Open Existing QA", command=lambda: self.switch_to(Frames.SEARCH))
         self.open_button.grid(row=2, column=0, padx=10, pady=10)
 
-        self.edit_button = tk.Button(self.root, text="Edit QA")
+        self.edit_button = tk.Button(self.root, text="Edit QA", command=lambda: self.switch_to(Frames.EDITOR))
         self.edit_button.grid(row=3, column=0, padx=10, pady=10)
 
         self.delete_button = tk.Button(self.root, text="Delete QA")
@@ -50,11 +63,40 @@ class MenuFrame(tk.Frame):
 
         self.root.grid_columnconfigure(0, weight=1)
 
-class ViewFrame(tk.Frame):
+class ViewFrame(Frame): # Can switch to editor or search, as well as deleteing the current QA and going to the menu.
     def __init__(self, master: UIController, **kwargs):
-        self.root = tk.Frame(master.root, **kwargs)
+        from qanotz.ui.ui import Frames
+        super().__init__(master, **kwargs)
 
-        self.root = tk.Frame(master.root, **kwargs)
+        button_frame = tk.Frame(self.root)
+        button_frame.grid(row=1, column=0, pady=10)
+
+        self.edit_button = tk.Button(button_frame, text="Edit QA", command=lambda: self.switch_to(Frames.EDITOR))
+        self.edit_button.pack(side=tk.LEFT, padx=5)
+
+        self.open_button = tk.Button(button_frame, text="Open QA", command=lambda: self.switch_to(Frames.SEARCH))
+        self.open_button.pack(side=tk.LEFT, padx=5)
+
+        self.delete_button = tk.Button(button_frame, text="Delete QA")
+        self.delete_button.pack(side=tk.LEFT, padx=5)
+
+        self.text = tk.Text(self.root, height=10, width=30)
+        self.text.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        
+        self.root.grid_rowconfigure(2, weight=1)
+        self.root.grid_columnconfigure(0, weight=1)
+
+class SearchFrame(Frame):
+    def __init__(self, master: UIController, **kwargs):
+        from qanotz.ui.ui import Frames
+        super().__init__(master, **kwargs)
+
+        self.search = tk.StringVar()
+        self.search_entry = tk.Entry(self.root, textvariable=self.search)
+        self.search_entry.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+
+        self.search_button = tk.Button(self.root, text="Search")
+        self.search_button.grid(row=0, column=1, padx=10, pady=10)
 
         button_frame = tk.Frame(self.root)
         button_frame.grid(row=1, column=0, pady=10)
@@ -69,7 +111,7 @@ class ViewFrame(tk.Frame):
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
         self.text = tk.Text(self.root, height=10, width=30)
-        self.text.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        self.text.grid(row=2, column=0, padx=10, pady=10, sticky="nsew", columnspan=2)
         
         self.root.grid_rowconfigure(2, weight=1)
         self.root.grid_columnconfigure(0, weight=1)

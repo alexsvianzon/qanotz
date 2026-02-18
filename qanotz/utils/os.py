@@ -11,9 +11,9 @@ def get_os():
     return platform.system()
 
 # TODO: Might change function to return the full path instead of just the appdata directory
-def get_appdata_dir():
+def get_appdata_dir() -> str:
     if get_os() == "Windows":
-        return os.getenv('APPDATA')
+        return str(os.getenv('APPDATA'))
     elif get_os() == "Darwin":
         return os.path.expanduser('~/Library/Application Support')
     else:
