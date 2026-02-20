@@ -17,6 +17,9 @@ case "$OS_NAME" in
     "CYGWIN"*|"MSYS"*|"MINGW"*|*"WindowsNT"*)
         mv dist/QANotz ./
         ;;
+    "Linux"*)
+        mv dist/QANotz ./
+        ;;
     *)
         echo "Unsupported OS: $OS_NAME"
         exit 1
