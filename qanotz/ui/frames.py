@@ -15,7 +15,7 @@ class Frame(tk.Frame):
     def switch_to(self, frame_enum: Frames):
         self.master.switch_frame(frame_enum) # pyright: ignore[reportAttributeAccessIssue]
 
-class EditorFrame(Frame): # Can switch from editor to view or search, as well as having buttons for saving and deleting QAs. Must handle going to a save frame if it is a new file.
+class EditorFrame(Frame): # DONE: Can switch from editor to view or search, as well as having buttons for saving and deleting QAs. Must handle going to a save frame if it is a new file.
     def __init__(self, master: UIController, **kwargs):
         from qanotz.ui.ui import Frames
         super().__init__(master, **kwargs)
@@ -23,17 +23,17 @@ class EditorFrame(Frame): # Can switch from editor to view or search, as well as
         button_frame = tk.Frame(self.root)
         button_frame.grid(row=1, column=0, pady=10)
 
+        self.switch_button = tk.Button(button_frame, text="View QA", command=lambda: self.switch_to(Frames.VIEW))
+        self.switch_button.pack(side=tk.LEFT, padx=5)
+
         self.save_button = tk.Button(button_frame, text="Save QA")
         self.save_button.pack(side=tk.LEFT, padx=5)
-
-        self.open_button = tk.Button(button_frame, text="Open QA", command=lambda: self.switch_to(Frames.SEARCH))
-        self.open_button.pack(side=tk.LEFT, padx=5)
 
         self.delete_button = tk.Button(button_frame, text="Delete QA")
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
-        self.switch_button = tk.Button(button_frame, text="Switch Mode", command=lambda: self.switch_to(Frames.VIEW))
-        self.switch_button.pack(side=tk.LEFT, padx=5)
+        self.open_button = tk.Button(button_frame, text="Open QA", command=lambda: self.switch_to(Frames.SEARCH))
+        self.open_button.pack(side=tk.LEFT, padx=5)
 
         self.text = tk.Text(self.root, height=10, width=30)
         self.text.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
@@ -41,7 +41,7 @@ class EditorFrame(Frame): # Can switch from editor to view or search, as well as
         self.root.grid_rowconfigure(2, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
 
-class MenuFrame(Frame): # Can switch to editor or search
+class MenuFrame(Frame): # Can switch to edito (new) or search
     def __init__(self, master: UIController, **kwargs):
         from qanotz.ui.ui import Frames
         super().__init__(master, **kwargs)
@@ -54,12 +54,6 @@ class MenuFrame(Frame): # Can switch to editor or search
 
         self.open_button = tk.Button(self.root, text="Open Existing QA", command=lambda: self.switch_to(Frames.SEARCH))
         self.open_button.grid(row=2, column=0, padx=10, pady=10)
-
-        self.edit_button = tk.Button(self.root, text="Edit QA", command=lambda: self.switch_to(Frames.EDITOR))
-        self.edit_button.grid(row=3, column=0, padx=10, pady=10)
-
-        self.delete_button = tk.Button(self.root, text="Delete QA")
-        self.delete_button.grid(row=4, column=0, padx=10, pady=10)
 
         self.root.grid_columnconfigure(0, weight=1)
 
@@ -98,20 +92,20 @@ class SearchFrame(Frame):
         self.search_button = tk.Button(self.root, text="Search")
         self.search_button.grid(row=0, column=1, padx=10, pady=10)
 
-        button_frame = tk.Frame(self.root)
-        button_frame.grid(row=1, column=0, pady=10)
+        self.button_frame = tk.Frame(self.root)
+        self.button_frame.grid(row=1, column=0, pady=10)
 
-        self.edit_button = tk.Button(button_frame, text="Edit QA")
+        self.edit_button = tk.Button(self.button_frame, text="Edit QA")
         self.edit_button.pack(side=tk.LEFT, padx=5)
 
-        self.open_button = tk.Button(button_frame, text="Open QA")
+        self.open_button = tk.Button(self.button_frame, text="Open QA")
         self.open_button.pack(side=tk.LEFT, padx=5)
 
-        self.delete_button = tk.Button(button_frame, text="Delete QA")
+        self.delete_button = tk.Button(self.button_frame, text="Delete QA")
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
-        self.text = tk.Text(self.root, height=10, width=30)
-        self.text.grid(row=2, column=0, padx=10, pady=10, sticky="nsew", columnspan=2)
+        self.selector_frame = tk.Frame(self.root)
+        self.selector_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
         
         self.root.grid_rowconfigure(2, weight=1)
         self.root.grid_columnconfigure(0, weight=1)

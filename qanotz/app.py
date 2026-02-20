@@ -11,7 +11,7 @@ class App:
     def __init__(self) -> None:
         self.root = tk.Tk()
         self.root.title("QANotz")
-        self.root.geometry("500x500")
+        self.root.geometry("500x300")
 
         self.database = Database()
 
