@@ -4,7 +4,7 @@ This file contains the main application class and the entry point to run the app
 """
 
 import tkinter as tk
-from qanotz.data.data import Database
+from qanotz.data.data import DatabaseManagerInstance
 from qanotz.ui.ui import UIController
 
 class App:
@@ -13,7 +13,7 @@ class App:
         self.root.title("QANotz")
         self.root.geometry("500x300")
 
-        self.database = Database()
+        self.database = DatabaseManagerInstance()
 
         self.ui_controller = UIController(self)
     

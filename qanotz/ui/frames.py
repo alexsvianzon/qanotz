@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import tkinter as tk
 from typing import TYPE_CHECKING
+from qanotz.data.data import DatabaseManagerInstance
 
 if TYPE_CHECKING:
     from qanotz.ui.ui import UIController, Frames
@@ -85,11 +86,13 @@ class SearchFrame(Frame):
         from qanotz.ui.ui import Frames
         super().__init__(master, **kwargs)
 
+        self.database = DatabaseManagerInstance()
+
         self.search = tk.StringVar()
         self.search_entry = tk.Entry(self.root, textvariable=self.search)
         self.search_entry.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
 
-        self.search_button = tk.Button(self.root, text="Search")
+        self.search_button = tk.Button(self.root, text="Search", command=self.search_all_files)
         self.search_button.grid(row=0, column=1, padx=10, pady=10)
 
         self.button_frame = tk.Frame(self.root)
@@ -109,3 +112,6 @@ class SearchFrame(Frame):
         
         self.root.grid_rowconfigure(2, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
+
+    def search_all_files(self):
+        print('hey...')
