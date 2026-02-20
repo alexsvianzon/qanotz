@@ -3,6 +3,8 @@ This module contains utility functions for working with the filesystem, such as 
 """
 
 import qanotz.utils.os as os
+import random
+import string
 
 class File:
     def __init__(self, path: str):
@@ -23,6 +25,14 @@ class File:
 class QAFile(File):
     def __init__(self, path: str) -> None:
         super().__init__(path)
+        self.content: str
+        self.last_modified: str
+        self.label: str
+
+def generate_random_filename(length: int = 16) -> str:
+    characters = string.ascii_letters + string.digits
+    random_filename = ''.join(random.choice(characters) for _ in range(length))
+    return random_filename
 
 if __name__ == "__main__":
     appdata_dir = os.get_appdata_dir()
@@ -38,3 +48,5 @@ if __name__ == "__main__":
     file.write(test_content)
     print(file.read())
     assert file.read() == test_content
+
+    print(generate_random_filename())

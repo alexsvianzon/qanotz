@@ -42,7 +42,7 @@ class DatabaseManagerInstance(DataManagerInstance):
         pass
 
     def create_qafile(self, content: str):
-       pass
+       qafile = QAFile(f"{self.data_path}/qafiles/{os_utils.generate_random_filename()}.qan")
 
 if __name__ == "__main__":
     db = DatabaseManagerInstance()

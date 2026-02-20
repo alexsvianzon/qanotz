@@ -58,7 +58,7 @@ def _parse_tokens(tokens: list, lookup_mode: bool = False, include_types: str = 
 
                 char_index += 2
                 char = token[char_index]
-                if char in "l":
+                if char in "lm": # l for label, m for modified last
                     result[item - 1]["metadata"][num_metadata]["id"] = char
                     char_index += 1
                 else:
@@ -197,6 +197,10 @@ if __name__ == "__main__":
 
     sample_text = """
     {f 1 /home/codespaces/.config/qanotz/qafiles/1.qan
-        {m l Common Questions}}
+        {m l Common Questions}
+        {m m 2/20/2026 2:20 PM}}
+    {f 2 /home/codespaces/.config/qanotz/qafiles/2.qan
+        {m l CSS Issues}
+        {m m 2/20/2026 2:22 PM}}}
     """
     parsed = parse(sample_text, lookup_mode=True)
