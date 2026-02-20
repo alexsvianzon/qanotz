@@ -19,9 +19,65 @@ def _tokenize(text) -> list:
     
     return tokens
 
-def _parse_tokens(tokens: list, include_types: str = "tqad") -> dict:
+def _parse_tokens(tokens: list, lookup_mode: bool = False, include_types: str = "tqad") -> dict:
     result = {}
     index = 0
+
+    if lookup_mode:
+        while index < len(tokens):
+            token = tokens[index]
+            char_index = 0
+            char = token[char_index]
+
+            item = result.__len__()
+
+            if char == "f":
+                result[item] = {}
+                result[item]["type"] = "file"
+
+                char_index += 2
+                char = token[char_index]
+                if char.isdigit():
+                    result[item]["id"] = int(char)
+                    char_index += 1
+                else:
+                        raise ValueError(f"Expected file ID at token: {token}")
+                
+                char_index += 1
+
+                body: str = ""
+                while char_index < len(token):
+                    body += token[char_index]
+                    char_index += 1
+
+                result[item]["body"] = body
+                result[item]["metadata"] = {}
+            elif char == "m":
+                num_metadata = result[item - 1]["metadata"].__len__()
+                result[item - 1]["metadata"][num_metadata] = {}
+
+                char_index += 2
+                char = token[char_index]
+                if char in "l":
+                    result[item - 1]["metadata"][num_metadata]["id"] = char
+                    char_index += 1
+                else:
+                    raise ValueError(f"Expected data ID at token '{token}' to be one of 'c', 'h', or 's'")
+                
+                char_index += 1
+
+                body: str = ""
+                while char_index < len(token):
+                    body += token[char_index]
+                    char_index += 1
+
+                result[item - 1]["metadata"][num_metadata]["body"] = body
+            else:
+                raise ValueError(f"Expected token type at token '{token}' to be one of 'f' or 'm'. This means there is something seriously wrong with your application. Please report this to the developer on GitHub.")
+                
+            index += 1
+                
+        return result
     
     while index < len(tokens):
         token = tokens[index]
@@ -112,9 +168,9 @@ def _parse_tokens(tokens: list, include_types: str = "tqad") -> dict:
 
         
 
-def parse(text, include_types: str = "tqad") -> dict:
+def parse(text, lookup_mode: bool = False, include_types: str = "tqad") -> dict:
     tokens = _tokenize(text)
-    parsed = _parse_tokens(tokens, include_types)
+    parsed = _parse_tokens(tokens, lookup_mode, include_types)
     print(parsed)
     return parsed
 
@@ -137,4 +193,10 @@ if __name__ == "__main__":
         {a 2 CSS grid
             {d c Set 'display' to 'grid' and 'place-items' to 'center'}
             {d h 0.8}}}"""
-    parsed = parse(sample_text, "tqa")
+    parsed = parse(sample_text, include_types="tqa")
+
+    sample_text = """
+    {f 1 /home/codespaces/.config/qanotz/qafiles/1.qan
+        {m l Common Questions}}
+    """
+    parsed = parse(sample_text, lookup_mode=True)

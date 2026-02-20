@@ -36,6 +36,14 @@ class DatabaseManagerInstance(DataManagerInstance):
         self.db_lookup = "/dblookup.dbl"
         super().__init__(self.db_lookup)
 
+        os_utils.ensure_dir(self.data_path + '/qafiles')
+
+    def parse_lookup(self):
+        pass
+
+    def create_qafile(self, content: str):
+       pass
+
 if __name__ == "__main__":
     db = DatabaseManagerInstance()
     log = LogManagerInstance()

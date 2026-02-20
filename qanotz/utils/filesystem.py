@@ -22,7 +22,7 @@ class File:
 
 class QAFile(File):
     def __init__(self, path: str) -> None:
-        self.path = path
+        super().__init__(path)
 
 if __name__ == "__main__":
     appdata_dir = os.get_appdata_dir()
