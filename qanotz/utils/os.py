@@ -5,6 +5,7 @@ This file checks the operating system and provides utility functions related to 
 
 import platform
 import os
+from datetime import * # type: ignore
 from pathlib import Path
 
 def get_os():
@@ -26,8 +27,12 @@ def ensure_dir(path) -> bool:
         os.makedirs(path, exist_ok=True)
         return True
     
+def get_datetime():
+    return datetime.now().strftime("%c")
+    
 if __name__ == "__main__":
     print(f"Operating System: {get_os()}")
     print(f"AppData Directory: {get_appdata_dir()}")
     print(f"Does AppData Directory Exist? {ensure_dir(f"{get_appdata_dir()}/notes_app")}")
+    print(f"It is {get_datetime()}")
     

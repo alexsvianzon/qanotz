@@ -89,7 +89,7 @@ class SearchFrame(Frame):
         self.database = DatabaseManagerInstance()
 
         self.search = tk.StringVar()
-        self.search_entry = tk.Entry(self.root, textvariable=self.search)
+        self.search_entry = tk.Entry(self.root, textvariable=self.search, width=30)
         self.search_entry.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
 
         self.search_button = tk.Button(self.root, text="Search", command=self.search_all_files)
@@ -107,6 +107,7 @@ class SearchFrame(Frame):
         self.delete_button = tk.Button(self.button_frame, text="Delete QA")
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
+        self.selected = tk.StringVar()
         self.selector_frame = tk.Frame(self.root)
         self.selector_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
         
@@ -116,3 +117,12 @@ class SearchFrame(Frame):
     def search_all_files(self):
         results = self.database.search_qas(self.search.get())
         print(results)
+
+        for widget in self.selector_frame.winfo_children():
+            widget.destroy()
+
+        for result in results:
+            (label, file_name) = result
+
+            rb = tk.Radiobutton(self.selector_frame, text=label, variable=self.selected, value=file_name)
+            rb.pack(side=tk.TOP, anchor='w')
