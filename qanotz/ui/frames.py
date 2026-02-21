@@ -194,3 +194,20 @@ class SearchFrame(Frame):
 
             rb = tk.Radiobutton(self.selector_frame, text=label, variable=self.selected, value=file_name)
             rb.pack(side=tk.TOP, anchor='w')
+
+class ListboxFrame(Frame):
+    def __init__(self, master: UIController, **kwargs):
+        super().__init__(master, **kwargs)
+
+        import random
+
+        choices = [random.randint(1, 100) for _ in range(100)]
+        choicesvar = tk.StringVar(value=choices)
+        l = tk.Listbox(self.root, listvariable=choicesvar)
+        l.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+
+        # Make the listbox expand with the frame
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_columnconfigure(0, weight=1)
+
+        self.listbox = l

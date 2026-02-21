@@ -15,7 +15,7 @@ class UIController:
         self.prev_frame: Frames = Frames.MENU
         self.current_frame: Frames = Frames.MENU
 
-        MenuFrame(self).root.pack(fill=tk.BOTH, expand=True)
+        ListboxFrame(self).root.pack(fill=tk.BOTH, expand=True)
 
     def switch_frame(self, frame_enum: Frames):
         self.prev_frame = self.current_frame
