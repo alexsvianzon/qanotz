@@ -119,78 +119,23 @@ class SearchFrame(Frame):
         canvas = tk.Canvas(frame)
         scrollbar = tk.Scrollbar(frame, orient="vertical", command=canvas.yview)
 
-        self.selected = tk.StringVar()
-        self.selector_frame = tk.Frame(canvas)
+        self.choices = []
+        self.choicesvar = tk.StringVar(value=self.choices) # pyright: ignore[reportArgumentType]
 
-        # Keep canvas scrollregion in sync with the selector_frame size
-        self.selector_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-
-        # Create a window on the canvas and keep a handle so we can resize it
-        self.canvas_window = canvas.create_window((0, 0), window=self.selector_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        # Pack canvas + scrollbar inside their container frame
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        # Place the container frame into the root using grid so it expands
-        frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
-
-        # Make inner window match canvas width when the canvas is resized
-        canvas.bind("<Configure>", lambda e: canvas.itemconfig(self.canvas_window, width=e.width))
-
-        # Mouse wheel scrolling helpers so the user can scroll anywhere over
-        # the selector area (not only the scrollbar).
-        def _on_mousewheel(event):
-            try:
-                # Linux: Button-4 (up), Button-5 (down)
-                if hasattr(event, 'num') and event.num in (4, 5):
-                    if event.num == 4:
-                        canvas.yview_scroll(-1, 'units')
-                    else:
-                        canvas.yview_scroll(1, 'units')
-                    return
-                # Windows / macOS: use event.delta sign
-                if hasattr(event, 'delta'):
-                    if event.delta < 0:
-                        canvas.yview_scroll(1, 'units')
-                    elif event.delta > 0:
-                        canvas.yview_scroll(-1, 'units')
-            except Exception:
-                pass
-
-        def _bind_to_mousewheel(event=None):
-            if sys.platform.startswith('linux'):
-                canvas.bind_all('<Button-4>', _on_mousewheel)
-                canvas.bind_all('<Button-5>', _on_mousewheel)
-            else:
-                canvas.bind_all('<MouseWheel>', _on_mousewheel)
-
-        def _unbind_from_mousewheel(event=None):
-            if sys.platform.startswith('linux'):
-                canvas.unbind_all('<Button-4>')
-                canvas.unbind_all('<Button-5>')
-            else:
-                canvas.unbind_all('<MouseWheel>')
-
-        # Bind enter/leave on both the canvas and the selector frame so
-        # scrolling works when hovering over any child (radiobuttons, etc.)
-        self.selector_frame.bind('<Enter>', _bind_to_mousewheel)
-        self.selector_frame.bind('<Leave>', _unbind_from_mousewheel)
-        canvas.bind('<Enter>', _bind_to_mousewheel)
-        canvas.bind('<Leave>', _unbind_from_mousewheel)
+        l = tk.Listbox(self.root, listvariable=self.choicesvar)
+        l.grid(row=2, column=0, sticky="nsew", padx=10, pady=10, columnspan=2)
 
         self.root.grid_rowconfigure(2, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
 
     def search_all_files(self):
-        results = self.database.search_qas(self.search.get())
+        self.results = self.database.search_qas(self.search.get())
 
-        for widget in self.selector_frame.winfo_children():
-            widget.destroy()
-
-        for result in results:
+        self.choices = []
+        for result in self.results:
             (label, file_name) = result
 
-            rb = tk.Radiobutton(self.selector_frame, text=label, variable=self.selected, value=file_name)
-            rb.pack(side=tk.TOP, anchor='w')
+            self.choices.append(label)
+
+        self.choicesvar.set(self.choices) # pyright: ignore[reportArgumentType]
+
