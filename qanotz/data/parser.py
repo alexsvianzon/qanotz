@@ -37,9 +37,15 @@ def _parse_tokens(tokens: list, lookup_mode: bool = False, include_types: str = 
 
                 char_index += 2
                 char = token[char_index]
-                if char.isdigit():
-                    result[item]["id"] = int(char)
+                id = ""
+                while token[char_index] != " ":
+                    char = token[char_index]
+                    id += char
+
                     char_index += 1
+
+                if id.isdigit():
+                    result[item]["id"] = int(id)
                 else:
                         raise ValueError(f"Expected file ID at token: {token}")
                 
@@ -92,11 +98,17 @@ def _parse_tokens(tokens: list, lookup_mode: bool = False, include_types: str = 
 
             char_index += 2
             char = token[char_index]
-            if char.isdigit():
-                result[item]["id"] = int(char)
+            id = ""
+            while token[char_index] != " ":
+                char = token[char_index]
+                id += char
+
                 char_index += 1
+
+            if id.isdigit():
+                result[item]["id"] = int(id)
             else:
-                raise ValueError(f"Expected question ID at token: {token}")
+                    raise ValueError(f"Expected question ID at token: {token}")
             
             char_index += 1
 
@@ -113,9 +125,15 @@ def _parse_tokens(tokens: list, lookup_mode: bool = False, include_types: str = 
 
             char_index += 2
             char = token[char_index]
-            if char.isdigit():
-                result[item - 1]["answers"][num_answers]["id"] = int(char)
+            id = ""
+            while token[char_index] != " ":
+                char = token[char_index]
+                id += char
+
                 char_index += 1
+
+            if id.isdigit():
+                result[item - 1]["answers"][num_answers]["id"] = int(id)
             else:
                 raise ValueError(f"Expected answer ID at token: {token}")
             
@@ -171,7 +189,6 @@ def _parse_tokens(tokens: list, lookup_mode: bool = False, include_types: str = 
 def parse(text, lookup_mode: bool = False, include_types: str = "tqad") -> dict:
     tokens = _tokenize(text)
     parsed = _parse_tokens(tokens, lookup_mode, include_types)
-    print(parsed)
     return parsed
 
 if __name__ == "__main__":
@@ -193,8 +210,11 @@ if __name__ == "__main__":
         {a 2 CSS grid
             {d c Set 'display' to 'grid' and 'place-items' to 'center'}
             {d h 0.8}}}"""
-    parsed = parse(sample_text, include_types="tqa")
+    print(parse(sample_text, include_types="tqa"))
 
+    print("\n\n---\n\n")
+
+    # example dbl file
     sample_text = """
     {f 1 /home/codespaces/.config/qanotz/qafiles/1.qan
         {m l Common Questions}
@@ -203,4 +223,4 @@ if __name__ == "__main__":
         {m l CSS Issues}
         {m m 2/20/2026 2:22 PM}}}
     """
-    parsed = parse(sample_text, lookup_mode=True)
+    print(parse(sample_text, lookup_mode=True))

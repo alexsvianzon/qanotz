@@ -5,6 +5,7 @@ This module contains utility functions for working with the filesystem, such as 
 import qanotz.utils.os as os
 import random
 import string
+import datetime
 
 class File:
     def __init__(self, path: str):
@@ -25,9 +26,16 @@ class File:
 class QAFile(File):
     def __init__(self, path: str) -> None:
         super().__init__(path)
-        self.content: str
-        self.last_modified: str
-        self.label: str
+        self.content: str = self.read()
+        self.last_modified: str = ""
+        self.label: str = ""
+
+    def write(self, content: str) -> None:
+        self.content = content
+        self.last_modified = datetime.datetime.now().strftime("%c")
+
+        file_content = f"f{self.path[-4]}{self.path[-3:]}{self.content}m{self.last_modified}l{self.label}"
+        super().write(file_content)
 
 def generate_random_filename(length: int = 16) -> str:
     characters = string.ascii_letters + string.digits

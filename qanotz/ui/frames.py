@@ -114,4 +114,5 @@ class SearchFrame(Frame):
         self.root.grid_columnconfigure(0, weight=1)
 
     def search_all_files(self):
-        print('hey...')
+        results = self.database.search_qas(self.search.get())
+        print(results)

@@ -10,7 +10,6 @@ from pathlib import Path
 def get_os():
     return platform.system()
 
-# TODO: Might change function to return the full path instead of just the appdata directory
 def get_appdata_dir() -> str:
     if get_os() == "Windows":
         return str(os.getenv('APPDATA'))
