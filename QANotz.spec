@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['qanotz/__main__.py'],
+    ['qanotz/app.py'],
     pathex=['.'],
     binaries=[],
     datas=[],
