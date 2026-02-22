@@ -26,14 +26,9 @@ case "$PLATFORM" in
       ICON_ARG="--icon=QANotz.ico"
     fi
     ;;
+esac
 
-pyinstaller \
-  --noconsole \
-  -n QANotz \
-  qanotz/__main__.py \
-  --paths . \
-  $ICON_ARG \
-  --clean
+pyinstaller --noconsole -n QANotz qanotz/__main__.py --paths . --icon=ICON_ARG --clean
 
 case "$PLATFORM" in
   macos)
