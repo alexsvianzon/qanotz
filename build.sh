@@ -1,31 +1,51 @@
 #!/bin/bash
+set -euo pipefail
 
-# Get OS name for future use
-
-OS_NAME=$(uname -s)
-
-# Build the qanotz application using pyinstaller
-# You can alternatively use 'pyinstaller QANotz.spec'
-pyinstaller --noconsole -n QANotz qanotz/__main__.py --paths . --icon=QANotz.icns --clean
-
-# Move the genereated file to the root directory
+OS_NAME="$(uname -s)"
 
 case "$OS_NAME" in
-    "Darwin"*|"Mac"*|"Apple"*|"macOS"*)
-        mv dist/QANotz.app ./
-        ;;
-    "CYGWIN"*|"MSYS"*|"MINGW"*|*"WindowsNT"*)
-        mv dist/QANotz ./
-        ;;
-    "Linux"*)
-        mv dist/QANotz ./
-        ;;
-    *)
-        echo "Unsupported OS: $OS_NAME"
-        exit 1
-        ;;
+  Darwin*)   PLATFORM="macos" ;;
+  Linux*)    PLATFORM="linux" ;;
+  MINGW*|MSYS*|CYGWIN*) PLATFORM="windows" ;;
+  *)
+    echo "Unsupported OS: $OS_NAME"
+    exit 1
+    ;;
 esac
 
-# Clean up build artifacts
+ICON_ARG=""
+
+case "$PLATFORM" in
+  macos)
+    if [[ -f QANotz.icns ]]; then
+      ICON_ARG="--icon=QANotz.icns"
+    fi
+    ;;
+  windows)
+    if [[ -f QANotz.ico ]]; then
+      ICON_ARG="--icon=QANotz.ico"
+    fi
+    ;;
+
+pyinstaller \
+  --noconsole \
+  -n QANotz \
+  qanotz/__main__.py \
+  --paths . \
+  $ICON_ARG \
+  --clean
+
+case "$PLATFORM" in
+  macos)
+    mv dist/QANotz.app ./QANotz-macos.app
+    ;;
+  windows)
+    mv dist/QANotz.exe ./QANotz-windows.exe
+    ;;
+  linux)
+    mv dist/QANotz ./QANotz-linux
+    ;;
+esac
 
 rm -rf build dist
+ls -lh QANotz*
