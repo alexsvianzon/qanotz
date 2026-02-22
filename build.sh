@@ -35,7 +35,7 @@ case "$PLATFORM" in
     mv dist/QANotz.app ./QANotz-macos.app
     ;;
   windows)
-    mv dist/QANotz.exe ./QANotz-windows.exe
+    mv dist/QANotz ./QANotz-windows
     ;;
   linux)
     mv dist/QANotz ./QANotz-linux
