@@ -18,12 +18,12 @@ ICON_ARG=""
 case "$PLATFORM" in
   macos)
     if [[ -f QANotz.icns ]]; then
-      ICON_ARG="--icon=QANotz.icns"
+      ICON_ARG="QANotz.icns"
     fi
     ;;
   windows)
     if [[ -f QANotz.ico ]]; then
-      ICON_ARG="--icon=QANotz.ico"
+      ICON_ARG="QANotz.ico"
     fi
     ;;
 esac
