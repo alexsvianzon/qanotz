@@ -3,10 +3,11 @@ from __future__ import annotations
 import tkinter as tk
 from typing import TYPE_CHECKING
 import sys
-from qanotz.data.data import DatabaseManagerInstance
 
 if TYPE_CHECKING:
     from qanotz.ui.ui import UIController, Frames
+
+from qanotz.data.data import DatabaseManagerInstance
 
 class Frame(tk.Frame):
     def __init__(self, master: UIController, **kwargs):
