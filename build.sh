@@ -28,7 +28,7 @@ case "$PLATFORM" in
     ;;
 esac
 
-pyinstaller --noconsole -n QANotz main.py --paths . --icon=$ICON_ARG --clean --collect-submodules qanotz --hidden-import=qanotz.data.data
+pyinstaller --noconsole -n QANotz main.py --paths . --icon=$ICON_ARG --clean --collect-all qanotz --hidden-import=qanotz.data.data
 
 case "$PLATFORM" in
   macos)
