@@ -30,7 +30,7 @@ esac
 
 python -c "import qanotz, sys; print(qanotz.__file__)"
 
-pyinstaller --noconsole -n QANotz qanotz/__main__.py --paths . --icon=$ICON_ARG --clean --collect-submodules qanotz
+pyinstaller --noconsole -n QANotz main.py --paths . --icon=$ICON_ARG --clean --collect-submodules qanotz
 
 case "$PLATFORM" in
   macos)
