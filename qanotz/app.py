@@ -4,8 +4,8 @@ This file contains the main application class and the entry point to run the app
 """
 
 import tkinter as tk
-from qanotz.data.data import DatabaseManagerInstance
 from qanotz.ui.ui import UIController
+from qanotz.data.data import DatabaseManagerInstance
 
 class App:
     def __init__(self) -> None:

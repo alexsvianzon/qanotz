@@ -1,24 +1,28 @@
 # -*- mode: python ; coding: utf-8 -*-
-from PyInstaller.utils.hooks import collect_submodules
+import os
 
-hiddenimports = []
-hiddenimports += collect_submodules('qanotz')
+block_cipher = None
 
+# Get the current working directory to ensure paths are absolute
+cwd = os.getcwd()
 
 a = Analysis(
     ['main.py'],
-    pathex=['.'],
+    pathex=[cwd], # Tell PyInstaller to look in the root for modules
     binaries=[],
-    datas=[],
-    hiddenimports=hiddenimports,
+    datas=[], # Add any non-py files here if needed
+    hiddenimports=['qanotz.data.data', 'qanotz.ui.ui', 'qanotz.utils.os'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
     noarchive=False,
-    optimize=0,
 )
-pyz = PYZ(a.pure)
+
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
 exe = EXE(
     pyz,
@@ -30,26 +34,30 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False,
+    console=False, # Set to False for Tkinter (no-console)
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['QANotz.icns'],
+    icon=['QANotz.ico' if os.path.exists('QANotz.ico') else None],
 )
+
 coll = COLLECT(
     exe,
     a.binaries,
+    a.zipfiles,
     a.datas,
     strip=False,
     upx=True,
     upx_exclude=[],
     name='QANotz',
 )
+
+# Mac App Bundle Config
 app = BUNDLE(
     coll,
     name='QANotz.app',
-    icon='QANotz.icns',
-    bundle_identifier=None,
+    icon='QANotz.icns' if os.path.exists('QANotz.icns') else None,
+    bundle_identifier='com.qanotz.app',
 )
