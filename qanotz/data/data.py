@@ -62,7 +62,7 @@ class DatabaseManagerInstance(DataManagerInstance):
         files = self.lookup.__len__()
         parsed_content = parse(content, include_types = "tq")
         file_append_content = f"\n\n{{f {files} {filename} \n"
-        file_append_content += f"{{m l {parsed_content[0]["body"]}}} \n"
+        file_append_content += f"{{m l {parsed_content[0]['body']}}} \n"
         file_append_content += f"{{m m {os_utils.get_datetime()}}}}}"
 
         self.file.append(file_append_content)
