@@ -33,6 +33,6 @@ def get_datetime():
 if __name__ == "__main__":
     print(f"Operating System: {get_os()}")
     print(f"AppData Directory: {get_appdata_dir()}")
-    print(f"Does AppData Directory Exist? {ensure_dir(f"{get_appdata_dir()}/notes_app")}")
+    print(f"Does AppData Directory Exist? {ensure_dir(f'{get_appdata_dir()}/notes_app')}")
     print(f"It is {get_datetime()}")
     
