@@ -1,17 +1,25 @@
 # -*- mode: python ; coding: utf-8 -*-
 import os
+import sys
 
 block_cipher = None
-
-# Get the current working directory to ensure paths are absolute
-cwd = os.getcwd()
+# This ensures we get the absolute path to your project root
+project_root = os.path.abspath(os.getcwd())
 
 a = Analysis(
     ['main.py'],
-    pathex=[cwd], # Tell PyInstaller to look in the root for modules
+    pathex=[project_root],
     binaries=[],
-    datas=[], # Add any non-py files here if needed
-    hiddenimports=['qanotz.data.data', 'qanotz.ui.ui', 'qanotz.utils.os'],
+    # This force-adds the entire folder into the bundle
+    datas=[('qanotz', 'qanotz')], 
+    hiddenimports=[
+        'qanotz',
+        'qanotz.data',
+        'qanotz.data.data',
+        'qanotz.ui',
+        'qanotz.ui.ui',
+        'qanotz.utils'
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -34,7 +42,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False, # Set to False for Tkinter (no-console)
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
@@ -54,7 +62,6 @@ coll = COLLECT(
     name='QANotz',
 )
 
-# Mac App Bundle Config
 app = BUNDLE(
     coll,
     name='QANotz.app',
