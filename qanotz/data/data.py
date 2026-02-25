@@ -76,8 +76,8 @@ class DatabaseManagerInstance(DataManagerInstance):
         raw = self.file.read()
         self.lookup = parse(raw, lookup_mode=True)
 
-    def save_qafile(self, qafile: QAFile):
-        qafile.write(qafile.content)
+    def save_qafile(self, content: str):
+        self.current_qa.write(content)
 
 if __name__ == "__main__":
     db = DatabaseManagerInstance()
