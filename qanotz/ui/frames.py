@@ -7,7 +7,7 @@ import sys
 if TYPE_CHECKING:
     from qanotz.ui.ui import UIController, Frames
 
-from qanotz.data.data import DatabaseManagerInstance
+from qanotz.data.parser import format_parsed_qafile, parse
 
 class Frame(tk.Frame):
     def __init__(self, master: UIController, **kwargs):
@@ -33,7 +33,7 @@ class EditorFrame(Frame): # DONE: Can switch from editor to view or search, as w
         self.save_button = tk.Button(button_frame, text="Save QA", command=self.save_file)
         self.save_button.pack(side=tk.LEFT, padx=5)
 
-        self.delete_button = tk.Button(button_frame, text="Delete QA")
+        self.delete_button = tk.Button(button_frame, text="To Menu", command=lambda: self.switch_to(Frames.MENU))
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
         self.open_button = tk.Button(button_frame, text="Open QA", command=lambda: self.switch_to(Frames.SEARCH))
@@ -42,19 +42,19 @@ class EditorFrame(Frame): # DONE: Can switch from editor to view or search, as w
         self.text = tk.Text(self.root, height=10, width=30)
         self.text.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
 
-        if self.db.current_qa:
+        if hasattr(self.db, "current_qa"):
             self.text.insert("1.0", self.db.current_qa.read())
         
         self.root.grid_rowconfigure(2, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
 
     def save_file(self):
-        if not self.db.current_qa:
+        if not hasattr(self.db, "current_qa"):
             self.db.create_qafile(self.text.get("1.0", "end"))
-        else:
-            self.db.save_qafile(self.text.get("1.0", "end"))
 
-class MenuFrame(Frame): # Can switch to edito (new) or search
+        self.db.save_qafile(self.text.get("1.0", "end"))
+
+class MenuFrame(Frame): # Can switch to editor (new) or search
     def __init__(self, master: UIController, **kwargs):
         from qanotz.ui.ui import Frames
         super().__init__(master, **kwargs)
@@ -84,11 +84,13 @@ class ViewFrame(Frame): # Can switch to editor or search, as well as deleteing t
         self.open_button = tk.Button(button_frame, text="Open QA", command=lambda: self.switch_to(Frames.SEARCH))
         self.open_button.pack(side=tk.LEFT, padx=5)
 
-        self.delete_button = tk.Button(button_frame, text="Delete QA")
+        self.delete_button = tk.Button(button_frame, text="To Menu", command=lambda: self.switch_to(Frames.MENU))
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
         self.text = tk.Text(self.root, height=10, width=30)
         self.text.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        self.text.insert("1.0", format_parsed_qafile(parse(self.db.current_qa.read())))
+        self.text['state'] = 'disabled'
         
         self.root.grid_rowconfigure(2, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
@@ -113,7 +115,7 @@ class SearchFrame(Frame):
         self.open_button = tk.Button(self.button_frame, text="Open QA", command=self.open_file)
         self.open_button.pack(side=tk.LEFT, padx=5)
 
-        self.delete_button = tk.Button(self.button_frame, text="Delete QA")
+        self.delete_button = tk.Button(self.button_frame, text="To Menu", command=lambda: self.switch_to(Frames.MENU))
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
         frame = tk.Frame(self.root)
@@ -126,6 +128,7 @@ class SearchFrame(Frame):
 
         self.root.grid_rowconfigure(2, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
+        self.root.update()
 
     def search_all_files(self):
         self.results = self.db.search_qas(self.search.get())
@@ -150,17 +153,13 @@ class SearchFrame(Frame):
         for result in self.results:
             (label, file_name) = result
 
-            print(f"The current test is '{label}', {file_name}")
-
             if label == self.lb.get(0, "end")[selection[0]]:
                 found = True
                 file = file_name
-            else:
-                print("No dice")
 
         if not found:
             return
         
         self.db.open_qa(file) # pyright: ignore[reportPossiblyUnboundVariable]
-        self.switch_to(Frames.EDITOR)
+        self.switch_to(Frames.VIEW)
 

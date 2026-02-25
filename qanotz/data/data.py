@@ -72,9 +72,11 @@ class DatabaseManagerInstance(DataManagerInstance):
 
         self.file.append(file_append_content)
 
-        #reparse dblookup
+        # reparse dblookup because we wrote to it
         raw = self.file.read()
         self.lookup = parse(raw, lookup_mode=True)
+
+        self.current_qa = qafile
 
     def save_qafile(self, content: str):
         self.current_qa.write(content)

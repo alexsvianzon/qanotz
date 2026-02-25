@@ -184,7 +184,33 @@ def _parse_tokens(tokens: list, lookup_mode: bool = False, include_types: str = 
             
     return result
 
-        
+def format_parsed_qafile(qafile_contents: dict) -> str:
+    parsed: str = ""
+
+    for _, item in qafile_contents.items():
+        if item["type"] == "title":
+            parsed += item["body"] + "\n"
+        elif item["type"] == "question":
+            parsed += item["body"] + "\n\n"
+
+            for _, answer in item["answers"].items():
+                parsed += str(answer["id"]) + ". " + answer["body"] + "\n"
+
+                for _, metadata in answer["metadata"].items():
+                    match metadata["id"]:
+                        case "c":
+                            parsed += "  - Comment: " + metadata["body"] + "\n"
+                        case "s":
+                            parsed += "  - Source: " + metadata["body"] + "\n"
+                        case "h":
+                            parsed += "  - Helpfulness: " + metadata["body"] + "\n"
+            
+                parsed += "\n"
+
+        parsed += "\n"
+
+    return parsed
+
 
 def parse(text, lookup_mode: bool = False, include_types: str = "tqad") -> dict:
     tokens = _tokenize(text)
