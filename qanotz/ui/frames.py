@@ -14,6 +14,7 @@ class Frame(tk.Frame):
         # from qanotz.ui.ui import UIController
         self.root = tk.Frame(master.root, **kwargs)
         self.uimaster: UIController = master
+        self.db = self.uimaster.db
 
     def switch_to(self, frame_enum: Frames):
         self.uimaster.switch_frame(frame_enum)
@@ -22,8 +23,6 @@ class EditorFrame(Frame): # DONE: Can switch from editor to view or search, as w
     def __init__(self, master: UIController, **kwargs):
         from qanotz.ui.ui import Frames
         super().__init__(master, **kwargs)
-
-        self.db = DatabaseManagerInstance()
 
         button_frame = tk.Frame(self.root)
         button_frame.grid(row=1, column=0, pady=10)
@@ -47,8 +46,7 @@ class EditorFrame(Frame): # DONE: Can switch from editor to view or search, as w
         self.root.grid_columnconfigure(0, weight=1)
 
     def save_file(self):
-        from qanotz.ui.ui import Frames
-        if self.uimaster.prev_frame == Frames.MENU:
+        if not self.db.current_qa:
             self.db.create_qafile(self.text.get("1.0", "end"))
 
 class MenuFrame(Frame): # Can switch to edito (new) or search
@@ -95,8 +93,6 @@ class SearchFrame(Frame):
         from qanotz.ui.ui import Frames
         super().__init__(master, **kwargs)
 
-        self.database = DatabaseManagerInstance()
-
         self.search = tk.StringVar()
         self.search_entry = tk.Entry(self.root, textvariable=self.search, width=30)
         self.search_entry.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
@@ -130,7 +126,7 @@ class SearchFrame(Frame):
         self.root.grid_columnconfigure(0, weight=1)
 
     def search_all_files(self):
-        self.results = self.database.search_qas(self.search.get())
+        self.results = self.db.search_qas(self.search.get())
 
         self.choices = []
         for result in self.results:

@@ -1,6 +1,7 @@
 import tkinter as tk
 from enum import Enum
 from qanotz.ui.frames import *
+from qanotz.data.data import DatabaseManagerInstance
 
 class Frames(Enum):
     MENU = 1
@@ -12,14 +13,12 @@ class UIController:
     def __init__(self, app):
         self.app = app
         self.root = app.root
-        self.prev_frame: Frames = Frames.MENU
-        self.current_frame: Frames = Frames.MENU
+
+        self.db = DatabaseManagerInstance()
 
         MenuFrame(self).root.pack(fill=tk.BOTH, expand=True)
 
     def switch_frame(self, frame_enum: Frames):
-        self.prev_frame = self.current_frame
-        self.current_frame = frame_enum
 
         for widget in self.root.winfo_children():
             widget.destroy()

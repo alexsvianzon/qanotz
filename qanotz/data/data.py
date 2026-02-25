@@ -41,6 +41,11 @@ class DatabaseManagerInstance(DataManagerInstance):
         raw = self.file.read()
         self.lookup = parse(raw, lookup_mode=True)
 
+        self.current_qa: QAFile
+
+    def open_qa(self, file_name: str):
+        self.current_qa = QAFile(self.data_path + "/qafiles/" + file_name)
+
     def search_qas(self, query: str):
         results = []
 
