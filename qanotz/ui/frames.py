@@ -121,7 +121,7 @@ class SearchFrame(Frame):
         frame = tk.Frame(self.root)
 
         self.choices = []
-        self.choicesvar = tk.StringVar(value=self.choices) # pyright: ignore[reportArgumentType]
+        self.choicesvar = tk.Variable(value=self.choices)
 
         self.lb = tk.Listbox(self.root, listvariable=self.choicesvar, selectmode=tk.SINGLE)
         self.lb.grid(row=2, column=0, sticky="nsew", padx=10, pady=10, columnspan=2)
@@ -139,7 +139,7 @@ class SearchFrame(Frame):
 
             choices.append(label)
 
-        self.choicesvar.set(choices) # pyright: ignore[reportArgumentType]
+        self.choicesvar.set(choices)
 
     def open_file(self):
         from qanotz.ui.ui import Frames
@@ -149,7 +149,7 @@ class SearchFrame(Frame):
         if not selection:
             return
 
-        file: str
+        file: str = ""
         for result in self.results:
             (label, file_name) = result
 
@@ -160,6 +160,6 @@ class SearchFrame(Frame):
         if not found:
             return
         
-        self.db.open_qa(file) # pyright: ignore[reportPossiblyUnboundVariable]
+        self.db.open_qa(file)
         self.switch_to(Frames.VIEW)
 

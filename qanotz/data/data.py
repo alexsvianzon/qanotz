@@ -92,6 +92,7 @@ if __name__ == "__main__":
 
     print(db.search_qas("c"))
 
+    # I am aware of how long this file is, but on the bright side, you get to learn about Rust!
     db.create_qafile("""
 {t Learning Rust}
 

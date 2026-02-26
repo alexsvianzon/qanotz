@@ -5,7 +5,7 @@ This file checks the operating system and provides utility functions related to 
 
 import platform
 import os
-from datetime import * # type: ignore
+from datetime import datetime
 from pathlib import Path
 
 def get_os():
