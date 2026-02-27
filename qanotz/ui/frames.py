@@ -1,3 +1,11 @@
+"""
+
+To whoever may be reading this code, I am sorry.
+Towards the end of the file, I had to add pyright suppressions because of how tkinter is written.
+If only.
+
+"""
+
 from __future__ import annotations
 
 import tkinter as tk
@@ -136,13 +144,13 @@ class SearchFrame(Frame):
 
             choices.append(label)
 
-        self.choicesvar.set(choices)
+        self.choicesvar.set(choices) # pyright: ignore[reportUnknownMemberType]
 
     def open_file(self):
         from qanotz.ui.ui import Frames
         found = False
 
-        selection = self.lb.curselection()
+        selection = self.lb.curselection() # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
         if not selection:
             return
 
@@ -150,7 +158,7 @@ class SearchFrame(Frame):
         for result in self.results:
             (label, file_name) = result
 
-            if label == self.lb.get(0, "end")[selection[0]]:
+            if label == self.lb.get(0, "end")[selection[0]]: # pyright: ignore[reportUnknownMemberType]
                 found = True
                 file = file_name
 
