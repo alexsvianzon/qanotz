@@ -1,4 +1,6 @@
-def _tokenize(text) -> list:
+from typing import Any
+
+def _tokenize(text: str) -> list[str]:
     tokens = []
     current = ""
     for char in text:
@@ -15,12 +17,12 @@ def _tokenize(text) -> list:
     if current.strip():
         tokens.append(current.strip())
 
-    tokens = [token for token in tokens if token != "{" and token != "}"]
+    tokens: list[str] = [token for token in tokens if token != "{" and token != "}"]
     
     return tokens
 
-def _parse_tokens(tokens: list, lookup_mode: bool = False, include_types: str = "tqad") -> dict:
-    result = {}
+def _parse_tokens(tokens: list[str], lookup_mode: bool = False, include_types: str = "tqad") -> dict[int, dict[str, Any]]:
+    result: dict[int, dict[str, Any]] = {}
     index = 0
 
     if lookup_mode:
@@ -29,7 +31,7 @@ def _parse_tokens(tokens: list, lookup_mode: bool = False, include_types: str = 
             char_index = 0
             char = token[char_index]
 
-            item = result.__len__()
+            item = len(result)
 
             if char == "f":
                 result[item] = {}
@@ -59,7 +61,7 @@ def _parse_tokens(tokens: list, lookup_mode: bool = False, include_types: str = 
                 result[item]["body"] = body
                 result[item]["metadata"] = {}
             elif char == "m":
-                num_metadata = result[item - 1]["metadata"].__len__()
+                num_metadata: int = len(result[item - 1]["metadata"])
                 result[item - 1]["metadata"][num_metadata] = {}
 
                 char_index += 2
@@ -120,7 +122,7 @@ def _parse_tokens(tokens: list, lookup_mode: bool = False, include_types: str = 
             result[item]["body"] = body
             result[item]["answers"] = {}
         elif char == "a" and char in include_types:
-            num_answers = result[item - 1]["answers"].__len__()
+            num_answers = len(result[item - 1]["answers"])
             result[item - 1]["answers"][num_answers] = {}
 
             char_index += 2
@@ -147,8 +149,8 @@ def _parse_tokens(tokens: list, lookup_mode: bool = False, include_types: str = 
             result[item - 1]["answers"][num_answers]["body"] = body
             result[item - 1]["answers"][num_answers]["metadata"] = {}
         elif char == "d" and char in include_types:
-            num_answers = result[item - 1]["answers"].__len__()
-            num_metadata = result[item - 1]["answers"][num_answers - 1]["metadata"].__len__()
+            num_answers = len(result[item - 1]["answers"])
+            num_metadata = len(result[item - 1]["answers"][num_answers - 1]["metadata"])
             result[item - 1]["answers"][num_answers - 1]["metadata"][num_metadata] = {}
 
             char_index += 2
@@ -184,26 +186,29 @@ def _parse_tokens(tokens: list, lookup_mode: bool = False, include_types: str = 
             
     return result
 
-def format_parsed_qafile(qafile_contents: dict) -> str:
+def format_parsed_qafile(qafile_contents: dict[int, dict[str, Any]]) -> str:
     parsed: str = ""
-
-    for _, item in qafile_contents.items():
+    
+    # keys aren’t used, so loop over the values directly
+    for item in qafile_contents.values():
         if item["type"] == "title":
-            parsed += item["body"] + "\n"
+            parsed += str(item["body"]) + "\n"
         elif item["type"] == "question":
-            parsed += item["body"] + "\n\n"
+            parsed += str(item["body"]) + "\n\n"
 
-            for _, answer in item["answers"].items():
-                parsed += str(answer["id"]) + ". " + answer["body"] + "\n"
+            for answer in item.get("answers", {}).values():
+                parsed += f"{answer['id']}. {answer['body']}\n"
 
-                for _, metadata in answer["metadata"].items():
+                for metadata in answer["metadata"].values():
                     match metadata["id"]:
                         case "c":
-                            parsed += "  - Comment: " + metadata["body"] + "\n"
+                            parsed += "  - Comment: " + str(metadata["body"]) + "\n"
                         case "s":
-                            parsed += "  - Source: " + metadata["body"] + "\n"
+                            parsed += "  - Source: " + str(metadata["body"]) + "\n"
                         case "h":
-                            parsed += "  - Helpfulness: " + metadata["body"] + "\n"
+                            parsed += "  - Helpfulness: " + str(metadata["body"]) + "\n"
+                        case _:
+                            parsed += "  - Unknown Metadata: " + str(metadata["body"]) + "\n"
             
                 parsed += "\n"
 
@@ -212,7 +217,7 @@ def format_parsed_qafile(qafile_contents: dict) -> str:
     return parsed
 
 
-def parse(text, lookup_mode: bool = False, include_types: str = "tqad") -> dict:
+def parse(text: str, lookup_mode: bool = False, include_types: str = "tqad") -> dict[int, dict[str, Any]]:
     tokens = _tokenize(text)
     parsed = _parse_tokens(tokens, lookup_mode, include_types)
     return parsed

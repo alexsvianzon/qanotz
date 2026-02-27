@@ -47,14 +47,14 @@ class DatabaseManagerInstance(DataManagerInstance):
         self.current_qa = QAFile(self.data_path + "/qafiles/" + file_name)
 
     def search_qas(self, query: str):
-        results = []
+        results: list[tuple[str, str]] = []
 
         for _, file_entry in self.lookup.items():
             metadata = file_entry.get("metadata", {})
             for _, meta in metadata.items():
                 if meta.get("id") == "l" and query.lower() in meta.get("body", "").lower():
                     # return the file path (file body) and the label/body of the metadata
-                    results.append((meta.get("body"), file_entry.get("body")))
+                    results.append((meta.get("body"), str(file_entry.get("body"))))
 
         return results
 

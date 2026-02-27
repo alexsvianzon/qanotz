@@ -1,16 +1,15 @@
 from __future__ import annotations
 
 import tkinter as tk
-from typing import TYPE_CHECKING
-import sys
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from qanotz.ui.ui import UIController, Frames
-
+    
 from qanotz.data.parser import format_parsed_qafile, parse
 
 class Frame(tk.Frame):
-    def __init__(self, master: UIController, **kwargs):
+    def __init__(self, master: UIController, **kwargs: Any):
         # from qanotz.ui.ui import UIController
         self.root = tk.Frame(master.root, **kwargs)
         self.uimaster: UIController = master
@@ -20,7 +19,7 @@ class Frame(tk.Frame):
         self.uimaster.switch_frame(frame_enum)
 
 class EditorFrame(Frame): # DONE: Can switch from editor to view or search, as well as having buttons for saving and deleting QAs. Must handle going to a save frame if it is a new file.
-    def __init__(self, master: UIController, **kwargs):
+    def __init__(self, master: UIController, **kwargs: Any):
         from qanotz.ui.ui import Frames
         super().__init__(master, **kwargs)
 
@@ -55,7 +54,7 @@ class EditorFrame(Frame): # DONE: Can switch from editor to view or search, as w
         self.db.save_qafile(self.text.get("1.0", "end"))
 
 class MenuFrame(Frame): # Can switch to editor (new) or search
-    def __init__(self, master: UIController, **kwargs):
+    def __init__(self, master: UIController, **kwargs: Any):
         from qanotz.ui.ui import Frames
         super().__init__(master, **kwargs)
 
@@ -71,7 +70,7 @@ class MenuFrame(Frame): # Can switch to editor (new) or search
         self.root.grid_columnconfigure(0, weight=1)
 
 class ViewFrame(Frame): # Can switch to editor or search, as well as deleteing the current QA and going to the menu.
-    def __init__(self, master: UIController, **kwargs):
+    def __init__(self, master: UIController, **kwargs: Any):
         from qanotz.ui.ui import Frames
         super().__init__(master, **kwargs)
 
@@ -96,7 +95,7 @@ class ViewFrame(Frame): # Can switch to editor or search, as well as deleteing t
         self.root.grid_columnconfigure(0, weight=1)
 
 class SearchFrame(Frame):
-    def __init__(self, master: UIController, **kwargs):
+    def __init__(self, master: UIController, **kwargs: Any):
         from qanotz.ui.ui import Frames
         super().__init__(master, **kwargs)
 
@@ -118,10 +117,8 @@ class SearchFrame(Frame):
         self.delete_button = tk.Button(self.button_frame, text="To Menu", command=lambda: self.switch_to(Frames.MENU))
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
-        frame = tk.Frame(self.root)
-
-        self.choices = []
-        self.choicesvar = tk.Variable(value=self.choices)
+        self.choices: list[str] = []
+        self.choicesvar: tk.Variable = tk.Variable(value=self.choices)
 
         self.lb = tk.Listbox(self.root, listvariable=self.choicesvar, selectmode=tk.SINGLE)
         self.lb.grid(row=2, column=0, sticky="nsew", padx=10, pady=10, columnspan=2)
@@ -133,9 +130,9 @@ class SearchFrame(Frame):
     def search_all_files(self):
         self.results = self.db.search_qas(self.search.get())
 
-        choices = []
+        choices: list[str] = []
         for result in self.results:
-            (label, file_name) = result
+            (label, _) = result
 
             choices.append(label)
 

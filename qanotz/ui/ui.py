@@ -1,5 +1,6 @@
 import tkinter as tk
 from enum import Enum
+from qanotz.app import App
 from qanotz.ui.frames import *
 from qanotz.data.data import DatabaseManagerInstance
 
@@ -10,9 +11,9 @@ class Frames(Enum):
     SEARCH = 4
 
 class UIController:
-    def __init__(self, app):
+    def __init__(self, app: App) -> None:
         self.app = app
-        self.root = app.root
+        self.root: tk.Tk = app.root
 
         self.db = DatabaseManagerInstance()
 

@@ -19,7 +19,7 @@ def get_appdata_dir() -> str:
     else:
         return os.path.expanduser('~/.config')
     
-def ensure_dir(path) -> bool:
+def ensure_dir(path: str) -> bool:
     path_obj = Path(path)
     if path_obj.exists() and path_obj.is_dir():
         return True
